@@ -1,0 +1,97 @@
+---
+title: Authentication
+description: API authentication requirements
+---
+
+<Callout type="info" title="Authentication Required">
+All `/v1` endpoints require authentication. The `/health` endpoint is public.
+</Callout>
+
+## Getting Your API Key
+
+<Steps>
+<Step>
+
+### Create an account
+
+[Sign up](https://cs2.sh/signup) and subscribe to a [plan](/docs/pricing).
+
+</Step>
+<Step>
+
+### Generate an API key
+
+Generate an API key from your [dashboard](https://cs2.sh/dashboard).
+
+</Step>
+</Steps>
+
+## Required Headers
+
+| Header | Value | Required |
+|--------|-------|----------|
+| `Authorization` | `Bearer YOUR_API_KEY` | All `/v1` endpoints |
+| `Accept-Encoding` | `gzip` | All `/v1` endpoints |
+| `Content-Type` | `application/json` | POST endpoints only |
+
+```text title="Required Headers"
+Authorization: Bearer YOUR_API_KEY
+Accept-Encoding: gzip
+```
+
+Both `Authorization` and `Accept-Encoding` headers are required for all authenticated requests.
+
+<Callout type="warn" title="Security">
+Never commit API keys to version control. Store them in environment variables or a secrets manager.
+</Callout>
+
+## Error Responses
+
+### 401 Unauthorized
+
+Returned when the API key is missing or invalid.
+
+```json title="401 Unauthorized"
+{
+  "error": "unauthorized",
+  "message": "missing or invalid api key",
+  "request_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+### 403 Quota Exceeded
+
+Returned when your monthly request quota has been exceeded.
+
+```json title="403 Quota Exceeded"
+{
+  "error": "quota_exceeded",
+  "message": "monthly request quota exceeded",
+  "request_id": "550e8400-e29b-41d4-a716-446655440000",
+  "details": {
+    "quota_limit": 10000,
+    "quota_used": 10000,
+    "resets_at": "2026-03-01T00:00:00Z"
+  }
+}
+```
+
+Upgrade your plan or wait until your quota resets on your billing date.
+
+## Key Rotation
+
+Rotate your API key from the [dashboard](https://cs2.sh/dashboard). Rotating generates a new key and immediately invalidates the old one.
+
+---
+
+<Cards>
+  <Card href="/docs/rate-limits" title="Errors & Limits">
+    Error responses and rate limiting
+  </Card>
+  <Card href="/docs/api-reference/prices-latest" title="Latest Prices">
+    Get current prices for all or specific items
+  </Card>
+  <Card href="/docs/pricing" title="Plans">
+    Plan comparison and endpoint access
+  </Card>
+</Cards>

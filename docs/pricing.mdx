@@ -1,0 +1,71 @@
+---
+title: Plans
+description: Plan comparison and endpoint access
+---
+
+cs2.sh offers three plans designed for different use cases. All plans include access to all six marketplaces (BUFF, YouPin, C5Game, CSFloat, Skinport, Steam).
+
+## Plan Comparison
+
+| Feature | Developer | Scale | Enterprise |
+|---------|-----------|-------|------------|
+| Pricing | $75/mo | $200/mo | Custom |
+| API Requests | 10,000/month | Unlimited | Unlimited |
+| `/v1/prices/latest` | ✓ | ✓ | ✓ |
+| `/v1/prices/history` | - | ✓ | ✓ |
+| `/v1/archive/history` | - | ✓ | ✓ |
+| `/v1/archive/csfloat` | - | ✓ | ✓ |
+| `/v1/liquidity` | - | ✓ | ✓ |
+| Custom endpoints | - | - | ✓ |
+| Raw data access | - | - | ✓ |
+| Priority support & feature requests | - | ✓ | ✓ |
+
+<Callout type="info" title="Shared Rate Limit">
+All plans share the same [rate limit](/docs/rate-limits) of 100 requests per second.
+</Callout>
+
+## Developer
+
+- **10,000 requests per billing month** - resets on your subscription renewal date
+- Access to `/v1/prices/latest` for real-time pricing across all marketplaces
+
+## Scale
+
+- **Unlimited requests**
+- Full API access including historical data and archives
+
+## Enterprise
+
+- **Unlimited requests** with custom rate limits available
+- Custom endpoint development for your use case
+- Direct access to raw data
+
+[Contact us](/pricing) to discuss enterprise pricing.
+
+## Support
+
+All users have access to the cs2.sh Discord server for support. Additionally, Scale and Enterprise plans have priority support & feature requests.
+
+## Billing
+
+- Plans are billed monthly or annually (20% discount for annual)
+- Request counts reset on your billing date, not calendar month
+- Upgrading mid-cycle applies immediately; downgrading takes effect next cycle
+- Manage your subscription from the [dashboard](/dashboard)
+
+## Demo Keys
+
+<Callout type="info" title="Demo Keys">
+Want to try the API before subscribing? Join our [Discord](https://discord.gg/7DeT4rVnT9) to request a 7-day demo key with Developer plan access.
+</Callout>
+
+---
+
+<Cards>
+  <Card href="/docs/rate-limits" title="Errors & Limits">
+    Error responses and rate limiting
+  </Card>
+  <Card href="/docs/authentication" title="Authentication">
+    API key setup and required headers
+  </Card>
+</Cards>

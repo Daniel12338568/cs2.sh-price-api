@@ -1,0 +1,20 @@
+{
+  "title": "Docs",
+  "pages": [
+    "index",
+    "---Guides---",
+    "authentication",
+    "rate-limits",
+    "pricing",
+    "---Data---",
+    "field-availability",
+    "variant-items",
+    "---API Reference---",
+    "api-reference/health",
+    "api-reference/prices-latest",
+    "api-reference/prices-history",
+    "api-reference/liquidity",
+    "api-reference/archive-history",
+    "api-reference/archive-csfloat"
+  ]
+}

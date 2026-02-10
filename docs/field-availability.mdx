@@ -1,0 +1,92 @@
+---
+title: Marketplaces
+description: Available data fields by marketplace
+---
+
+cs2.sh currently supports BUFF, YouPin, C5Game, CSFloat, Skinport, and Steam
+
+| Marketplace | ask | bid | ask_volume | bid_volume | Additional      |
+| ----------- | --- | --- | ---------- | ---------- | --------------- |
+| BUFF        | Yes | Yes | Yes        | Yes        | -               |
+| YouPin      | Yes | Yes | Yes        | Yes        | -               |
+| C5Game      | Yes | Yes | Yes        | Yes        | -               |
+| CSFloat     | Yes | -   | Yes        | -          | -               |
+| Skinport    | Yes | -   | Yes        | -          | max/mean/median, history |
+| Steam       | Yes | -   | Yes        | -          | -               |
+
+## Field Types
+
+<TypeTable
+  type={{
+    ask: {
+      type: "number",
+      description: "Lowest listing price (USD)",
+    },
+    bid: {
+      type: "number",
+      description: "Highest buy order (USD)",
+    },
+    ask_volume: {
+      type: "integer",
+      description: "Items listed for sale",
+    },
+    bid_volume: {
+      type: "integer",
+      description: "Active buy orders",
+    },
+    updated_at: {
+      type: "date-time",
+      description: "Update time provided by Marketplace",
+    },
+    collected_at: {
+      type: "date-time",
+      description: "Collected time from cs2.sh system",
+    },
+    max_ask: {
+      type: "number",
+      description: "Highest listing price (Skinport)",
+    },
+    mean_ask: {
+      type: "number",
+      description: "Average listing price (Skinport)",
+    },
+    median_ask: {
+      type: "number",
+      description: "Median listing price (Skinport)",
+    },
+    "24h_history": {
+      type: "object",
+      description: "24-hour price history (Skinport)",
+    },
+    "7d_history": {
+      type: "object",
+      description: "7-day price history (Skinport)",
+    },
+    "30d_history": {
+      type: "object",
+      description: "30-day price history (Skinport)",
+    },
+    "90d_history": {
+      type: "object",
+      description: "90-day price history (Skinport)",
+    },
+  }}
+/>
+
+<Callout type="info" title="Currency">
+All prices are normalized to USD.
+</Callout>
+
+---
+
+<Cards>
+  <Card href="/docs/api-reference/prices-latest" title="Latest Prices">
+    Get current prices for all or specific items
+  </Card>
+  <Card href="/docs/api-reference/prices-history" title="Price History">
+    Get historical OHLC prices
+  </Card>
+  <Card href="/docs/api-reference/archive-history" title="Archive History">
+    Get long-term historical archive prices
+  </Card>
+</Cards>

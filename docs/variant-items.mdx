@@ -1,0 +1,60 @@
+---
+title: Variant Items
+description: Doppler phases, Case Hardened tiers, and other variants
+---
+
+<Callout type="info" title="Universal Support">
+All endpoints support variant items.
+</Callout>
+
+Items with variants (Dopplers, Case Hardened, etc.) include a `variants` object in the response:
+
+```json title="Variant Response"
+{
+  "market_hash_name": "★ Karambit | Doppler (Factory New)",
+  "buff": { ... },
+  "variants": {
+    "Phase 1": {
+      "display_name": "Phase 1",
+      "version": "p1",
+      "buff": { ... }
+    },
+    "Ruby": {
+      "display_name": "Ruby",
+      "version": "ruby",
+      "buff": { ... }
+    }
+  }
+}
+```
+
+## Doppler Phases
+
+| Display Name | Version |
+|--------------|---------|
+| Phase 1-4 | `p1`, `p2`, `p3`, `p4` |
+| Ruby | `ruby` |
+| Sapphire | `sapphire` |
+| Black Pearl | `blackpearl` |
+| Emerald | `emerald` |
+
+## Case Hardened Tiers
+
+| Display Name | Version |
+|--------------|---------|
+| Tier 1-4 | `t1`, `t2`, `t3`, `t4` |
+| Blue Gem | `singleblue` |
+
+---
+
+<Cards>
+  <Card href="/docs/api-reference/prices-latest" title="Latest Prices">
+    Get current prices for all or specific items
+  </Card>
+  <Card href="/docs/api-reference/prices-history" title="Price History">
+    Get historical OHLC prices
+  </Card>
+  <Card href="/docs/api-reference/archive-history" title="Archive History">
+    Get long-term historical archive prices
+  </Card>
+</Cards>

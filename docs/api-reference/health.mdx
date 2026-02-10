@@ -1,0 +1,187 @@
+---
+title: Health
+description: Service health status endpoint
+---
+
+<Callout type="info" title="Available on all plans (no authentication required)">
+  The health endpoint is public and free to use.
+</Callout>
+
+## GET /health
+
+Returns service status and data freshness for each source. No authentication required.
+
+**Status values:**
+- `up` - Data collected less than 10 minutes ago
+- `degraded` - Data collected 10 minutes to 1 hour ago
+- `down` - Data collected more than 1 hour ago
+
+### Example Request
+
+<Tabs items={["Python", "Node.js", "Go", "cURL"]} groupId="request-language" persist updateAnchor>
+  <Tab value="Python">
+
+```python title="Python"
+import requests
+
+response = requests.get("https://api.cs2.sh/health", timeout=30)  # [!code highlight]
+response.raise_for_status()
+print(response.json())
+```
+
+  </Tab>
+  <Tab value="Node.js">
+
+```js title="Node.js"
+async function main() {
+  const response = await fetch("https://api.cs2.sh/health", { // [!code highlight]
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  console.log(data);
+}
+
+main().catch(console.error);
+```
+
+  </Tab>
+  <Tab value="Go">
+
+```go title="Go"
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"time"
+)
+
+func main() {
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Get("https://api.cs2.sh/health") // [!code highlight]
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(string(body))
+}
+```
+
+  </Tab>
+  <Tab value="cURL">
+
+```bash title="cURL"
+curl -X GET "https://api.cs2.sh/health" # [!code highlight]
+```
+
+  </Tab>
+</Tabs>
+
+### Response Fields
+
+<TypeTable
+  type={{
+    status: {
+      type: "string",
+      description: "Overall service status: up, degraded, or down",
+    },
+    last_refreshed_at: {
+      type: "date-time",
+      description: "When health data was last refreshed",
+    },
+    sources: {
+      type: "object",
+      description: "Status per data source (buff, youpin, csfloat, skinport, c5game, steam)",
+    },
+    "sources.<name>.updated_at": {
+      type: "date-time",
+      description: "When price was last updated at marketplace",
+    },
+    "sources.<name>.collected_at": {
+      type: "date-time",
+      description: "When cs2.sh collected this data",
+    },
+    "sources.<name>.status": {
+      type: "string",
+      description: "Source status: up, degraded, or down",
+    },
+    "stats.total_events": {
+      type: "integer",
+      description: "Total number of price events in database",
+    },
+    "stats.market_hash_names": {
+      type: "integer",
+      description: "Number of unique items tracked",
+    },
+    "stats.variant_items": {
+      type: "integer",
+      description: "Number of variant items tracked",
+    },
+  }}
+/>
+
+### Example Response
+
+```json title="Response"
+{
+  "status": "up",
+  "last_refreshed_at": "2026-02-07T18:53:25.411235553Z",
+  "sources": {
+    "buff": {
+      "updated_at": "2026-02-07T18:30:00Z",
+      "collected_at": "2026-02-07T18:51:47.261Z",
+      "status": "up"
+    },
+    "c5game": {
+      "updated_at": "2026-02-07T18:52:11.709Z",
+      "collected_at": "2026-02-07T18:52:11.71Z",
+      "status": "up"
+    },
+    "csfloat": {
+      "updated_at": "2026-02-07T18:49:35.274Z",
+      "collected_at": "2026-02-07T18:49:35.284Z",
+      "status": "up"
+    },
+    "skinport": {
+      "updated_at": "2026-02-07T18:49:39.457Z",
+      "collected_at": "2026-02-07T18:49:46.766Z",
+      "status": "up"
+    },
+    "steam": {
+      "updated_at": "2026-02-07T18:50:52Z",
+      "collected_at": "2026-02-07T18:51:24.88Z",
+      "status": "up"
+    },
+    "youpin": {
+      "updated_at": "2026-02-07T18:51:16Z",
+      "collected_at": "2026-02-07T18:51:24.88Z",
+      "status": "up"
+    }
+  },
+  "stats": {
+    "total_events": 3693522958,
+    "market_hash_names": 36540,
+    "variant_items": 1260
+  }
+}
+```
+
+---
+
+<Cards>
+  <Card href="/docs" title="Getting Started">
+    Quick start guide and API overview
+  </Card>
+</Cards>
