@@ -6,11 +6,11 @@ Real-time prices across all 6 marketplaces.
 Available on all paid plans (Developer, Scale, Enterprise).
 Updated every 10 seconds.
 
-BUFF, YouPin, and C5Game include both `ask` and `bid` prices.
-CSFloat, Skinport, and Steam are `ask`-only.
+BUFF, Youpin, and C5Game include both `ask` and `bid` prices.
+CSFloat, Steam, and Skinport are `ask`-only.
 Skinport additionally returns `max_ask`, `mean_ask`, `median_ask`, and rolling history objects.
 
-BUFF, YouPin, and C5Game include both ask and bid prices. CSFloat, Skinport, and Steam are ask-only. Skinport additionally returns `max_ask`, `mean_ask`, `median_ask`, and rolling history objects.
+BUFF, Youpin, and C5Game include both ask and bid prices. CSFloat, Steam, and Skinport are ask-only. Skinport additionally returns `max_ask`, `mean_ask`, `median_ask`, and rolling history objects.
 
 ---
 
@@ -521,11 +521,11 @@ Each source returns the fields available for that marketplace. See [Marketplaces
     },
     bid: {
       type: "number",
-      description: "Highest buy order in USD (BUFF, YouPin, C5Game)",
+      description: "Highest buy order in USD (BUFF, Youpin, C5Game)",
     },
     bid_volume: {
       type: "integer",
-      description: "Number of active buy orders (BUFF, YouPin, C5Game)",
+      description: "Number of active buy orders (BUFF, Youpin, C5Game)",
     },
     max_ask: {
       type: "number",
