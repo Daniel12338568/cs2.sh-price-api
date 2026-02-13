@@ -73,7 +73,8 @@ print(response.json())
 ```js title="Node.js"
 // [!code word:YOUR_API_KEY]
 async function main() {
-  const response = await fetch("https://api.cs2.sh/v1/prices/latest", { // [!code highlight]
+  const response = await fetch("https://api.cs2.sh/v1/prices/latest", {
+    // [!code highlight]
     method: "GET",
     headers: {
       Authorization: "Bearer YOUR_API_KEY", // [!code highlight]
@@ -82,7 +83,9 @@ async function main() {
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Request failed: ${response.status} ${response.statusText}`,
+    );
   }
 
   const data = await response.json();
@@ -139,15 +142,15 @@ func main() {
 
 ## Endpoints
 
-| I need... | Endpoint | Plan |
-|---|---|---|
-| Current prices (all items) | `GET /v1/prices/latest` | Developer+ |
-| Current prices (specific items) | `POST /v1/prices/latest` | Developer+ |
-| Recent price history (OHLC) | `POST /v1/prices/history` | Scale+ |
-| Long-term price history | `POST /v1/archive/history` | Scale+ |
-| CSFloat sales history | `POST /v1/archive/csfloat` | Scale+ |
-| Liquidity scores | `GET\|POST /v1/liquidity` | Scale+ |
-| Service health | `GET /health` | Free |
+| I need...                       | Endpoint                   | Plan       |
+| ------------------------------- | -------------------------- | ---------- |
+| Current prices (all items)      | `GET /v1/prices/latest`    | Developer+ |
+| Current prices (specific items) | `POST /v1/prices/latest`   | Developer+ |
+| Recent price history (OHLC)     | `POST /v1/prices/history`  | Scale+     |
+| Long-term price history         | `POST /v1/archive/history` | Scale+     |
+| CSFloat sales history           | `POST /v1/archive/csfloat` | Scale+     |
+| Liquidity scores                | `GET\|POST /v1/liquidity`  | Scale+     |
+| Service health                  | `GET /health`              | Free       |
 
 ## Next Steps
 
@@ -168,4 +171,4 @@ func main() {
 ## LLM-Friendly Docs
 
 These docs are available as plain markdown for LLMs and AI tools.
-Full docs at [cs2.sh/llms.txt](https://cs2.sh/llms.txt), or append `.md` to any docs URL (e.g. [cs2.sh/docs/api-reference/prices-latest.md](https://cs2.sh/docs/api-reference/prices-latest.md)).
+Summary at [cs2.sh/llms.txt](https://cs2.sh/llms.txt), full docs at [cs2.sh/llms-full.txt](https://cs2.sh/llms-full.txt), or append `.md` to any docs URL (e.g. [cs2.sh/docs/api-reference/prices-latest.md](https://cs2.sh/docs/api-reference/prices-latest.md)).
