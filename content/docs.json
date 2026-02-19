@@ -43,6 +43,7 @@
   "contextual": {
     "options": ["copy", "view", "claude", "chatgpt"]
   },
+  "openapi": ["openapi.yaml"],
   "seo": {
     "indexHiddenPages": false
   },
