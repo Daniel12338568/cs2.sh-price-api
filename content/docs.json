@@ -20,10 +20,6 @@
   "icons": {
     "library": "lucide"
   },
-  "logo": {
-    "text": "cs2.sh",
-    "href": "https://cs2.sh"
-  },
   "navbar": {
     "links": [
       { "label": "Dashboard", "href": "https://cs2.sh/dashboard" }
