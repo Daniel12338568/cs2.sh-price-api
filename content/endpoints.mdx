@@ -1,0 +1,71 @@
+---
+title: Endpoints
+description: What each endpoint does, how the data works, and when to use which one.
+---
+
+All `/v1` endpoints require [authentication](/authentication). All prices are in USD. All endpoints support [variant items](/variant-items). POST endpoints accept up to 100 items per request.
+
+## Latest
+
+`GET /v1/prices/latest` · `POST /v1/prices/latest` · **All plans**
+
+Real-time snapshot prices across all 6 marketplaces, updated every 10 seconds. This is the core endpoint — it returns the current `ask` (lowest listing price) and `bid` (highest buy order) for every item on every marketplace.
+
+The GET endpoint returns all items at once. The POST endpoint lets you request specific items by `market_hash_name`, which is useful when you only care about a subset and want a smaller response.
+
+Each marketplace object includes `updated_at` (when the marketplace last reported the price) and `collected_at` (when cs2.sh captured it). The gap between these tells you how fresh the data is at the source.
+
+BUFF, Youpin, and C5Game support both ask and bid pricing. CSFloat, Steam, and Skinport only have ask data. Skinport also includes additional rolling history fields.
+
+---
+
+## History
+
+`POST /v1/prices/history` · **Scale+**
+
+OHLC (Open/High/Low/Close) candles per marketplace, starting from **December 24, 2025**. Updates continuously alongside the latest endpoint.
+
+OHLC compresses raw price snapshots into candles: the first price when the interval started (open), the peak (high), the trough (low), and the last price before it ended (close). This lets you see price movement across timeframes without working with thousands of raw data points.
+
+You choose the interval: `5m`, `30m`, `1h`, or `1d`. Smaller intervals give more granularity but cover shorter ranges — `5m` caps at 14 days, while `1d` goes up to 365 days. Requesting a range that exceeds the max for your interval returns HTTP 400.
+
+The `sources` parameter controls which marketplaces appear in the response. By default, all 6 are included. Each time bucket contains one key per source, so you can compare prices across marketplaces at the same point in time. Bid OHLC fields only appear on sources that support bids (BUFF, Youpin, C5Game).
+
+For data older than December 2025, use [Archive History](#archive-history).
+
+---
+
+## Archive History
+
+`POST /v1/archive/history` · **Scale+**
+
+Long-term historical prices going back **~2-3 years** depending on the item. Updates ~1-2 times per day. Only supports `1h` and `1d` intervals.
+
+The key difference from [History](#history) is the available sources. Instead of individual marketplaces, Archive History offers `aggregate`, `buff`, `youpin`, and `c5game`. The `aggregate` source is a cross-marketplace composite — it takes the lowest ask across all marketplaces and the highest bid from BUFF and Youpin. It also includes `hourly_volume` and `total_supply`, which aren't available on individual sources. Hourly volume is the total sales of the item in the given hour. Total supply is the item's approximate total supply (# that exist).
+
+By default, only `aggregate` is returned. You can request multiple sources in a single call (e.g. `["aggregate", "buff"]`), and each time bucket will contain one key per source.
+
+Use this when you need historical trends over months or years. Use [History](#history) when you need granular, per-marketplace candles for recent data.
+
+---
+
+## Archive CSFloat
+
+`POST /v1/archive/csfloat` · **Scale+**
+
+CSFloat daily sale averages going back **~2-3 years**. Updates ~once per day.
+
+Unlike the other history endpoints which track listing/order book prices, this tracks **actual completed sales** on CSFloat. Each data point is a single day with the average sale price and total volume (number of sales) for that day.
+
+
+---
+
+## Liquidity
+
+`GET /v1/liquidity` · `POST /v1/liquidity` · **Scale+**
+
+Liquidity rankings from 0-100 for items across all marketplaces. Liquidity is a computed weighted average score across all items. For example, a score of 90 would mean it is in the 90th percentile of liquidity. A higher score means the item has higher sale volume. ~80+ is recommended for trading liquid items.
+
+The GET endpoint returns rankings for all items. The POST endpoint lets you request specific items by `market_hash_name`.
+
+Useful for filtering out illiquid items.

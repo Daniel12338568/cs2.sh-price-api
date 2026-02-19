@@ -6,7 +6,6 @@ Collecting, processing, and aggregating price data across all items & all major 
 
 Price APIs for Buff, Youpin, CSFloat, Steam, Skinport, and C5Game.
 
-This repository holds:
-
-- [documentation](https://github.com/idomanteu/cs2.sh-price-api/tree/main/docs) (in markdown)
-- [code examples](https://github.com/idomanteu/cs2.sh-price-api/tree/main/examples) for all API endpoints
+- [Documentation](https://cs2.sh/docs)
+- [API Reference](https://cs2.sh/docs/api-reference/prices-latest)
+- [LLM-friendly docs](https://cs2.sh/llms.txt)

@@ -1,0 +1,53 @@
+---
+title: Get Price History
+openapi: openapi.yaml POST /v1/prices/history
+---
+
+<ResponseExample>
+```json
+{
+  "response_time": "2023-11-07T05:31:56Z",
+  "currency": "<string>",
+  "quota": { "remaining": "<number>", "resets_at": "2023-11-07T05:31:56Z" },
+  "start": "2023-11-07T05:31:56Z",
+  "end": "2023-11-07T05:31:56Z",
+  "interval": "<string>",
+  "items": {
+    "<market_hash_name>": {
+      "market_hash_name": "<string>",
+      "count": "<number>",
+      "data": [
+        {
+          "bucket": "2023-11-07T05:31:56Z",
+          "buff": {
+            "open_ask": "<number>",
+            "high_ask": "<number>",
+            "low_ask": "<number>",
+            "close_ask": "<number>",
+            "ask_volume": "<number>",
+            "open_bid": "<number>",
+            "high_bid": "<number>",
+            "low_bid": "<number>",
+            "close_bid": "<number>",
+            "bid_volume": "<number>",
+            "sample_count": "<number>",
+            "open_time": "2023-11-07T05:31:56Z",
+            "close_time": "2023-11-07T05:31:56Z"
+          },
+          "steam": {
+            "open_ask": "<number>",
+            "high_ask": "<number>",
+            "low_ask": "<number>",
+            "close_ask": "<number>",
+            "ask_volume": "<number>",
+            "sample_count": "<number>",
+            "open_time": "2023-11-07T05:31:56Z",
+            "close_time": "2023-11-07T05:31:56Z"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+</ResponseExample>

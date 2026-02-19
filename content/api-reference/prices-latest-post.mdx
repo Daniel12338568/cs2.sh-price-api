@@ -1,0 +1,65 @@
+---
+title: Get Latest Prices (POST)
+openapi: openapi.yaml POST /v1/prices/latest
+---
+
+<ResponseExample>
+```json
+{
+  "response_time": "2023-11-07T05:31:56Z",
+  "currency": "<string>",
+  "quota": { "remaining": "<number>", "resets_at": "2023-11-07T05:31:56Z" },
+  "items": {
+    "<market_hash_name>": {
+      "market_hash_name": "<string>",
+      "buff": {
+        "updated_at": "2023-11-07T05:31:56Z",
+        "collected_at": "2023-11-07T05:31:56Z",
+        "ask": "<number>",
+        "ask_volume": "<number>",
+        "bid": "<number>",
+        "bid_volume": "<number>"
+      },
+      "youpin": {
+        "updated_at": "2023-11-07T05:31:56Z",
+        "collected_at": "2023-11-07T05:31:56Z",
+        "ask": "<number>",
+        "ask_volume": "<number>",
+        "bid": "<number>",
+        "bid_volume": "<number>"
+      },
+      "csfloat": {
+        "updated_at": "2023-11-07T05:31:56Z",
+        "collected_at": "2023-11-07T05:31:56Z",
+        "ask": "<number>",
+        "ask_volume": "<number>"
+      },
+      "steam": {
+        "updated_at": "2023-11-07T05:31:56Z",
+        "collected_at": "2023-11-07T05:31:56Z",
+        "ask": "<number>",
+        "ask_volume": "<number>"
+      },
+      "skinport": {
+        "updated_at": "2023-11-07T05:31:56Z",
+        "collected_at": "2023-11-07T05:31:56Z",
+        "ask": "<number>",
+        "ask_volume": "<number>",
+        "max_ask": "<number>",
+        "mean_ask": "<number>",
+        "median_ask": "<number>"
+      },
+      "c5game": {
+        "updated_at": "2023-11-07T05:31:56Z",
+        "collected_at": "2023-11-07T05:31:56Z",
+        "ask": "<number>",
+        "ask_volume": "<number>",
+        "bid": "<number>",
+        "bid_volume": "<number>"
+      }
+    }
+  },
+  "errors": []
+}
+```
+</ResponseExample>

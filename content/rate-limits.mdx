@@ -1,0 +1,82 @@
+---
+title: Errors & Limits
+description: Error codes and rate limiting.
+---
+
+## Error Responses
+
+All API errors follow a consistent JSON format:
+
+```json Error Format
+{
+  "error": "error_code",
+  "message": "human-readable description",
+  "request_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+Some errors include additional context in a `details` object.
+
+### Status Codes
+
+| Code | Error | Description |
+|------|-------|-------------|
+| 400 | `bad_request` | Invalid request parameters (POST endpoints) |
+| 401 | `unauthorized` | Missing or invalid API key |
+| 403 | `quota_exceeded` | Monthly request quota exceeded |
+| 404 | `not_found` | Item not found |
+| 429 | `rate_limited` | Too many requests (see [Rate Limits](#rate-limits) below) |
+| 503 | `service_unavailable` | Service temporarily unavailable |
+| 504 | `timeout` | Request timeout |
+
+### Item-Level Errors
+
+POST endpoints that accept multiple items return item-level errors in the `errors` array alongside successful results:
+
+```json Item-Level Error
+{
+  "errors": [
+    {
+      "item": "Invalid Item Name",
+      "code": "unknown_item",
+      "message": "item not found"
+    }
+  ]
+}
+```
+
+---
+
+## Rate Limits
+
+<Warning>
+**Rate Limit**
+
+Requests are limited to **100 per second** per user. This is temporary to
+stress-test the API and will be reduced in the future.
+</Warning>
+
+### 429 Response
+
+```json 429 Response
+{
+  "error": "rate_limited",
+  "message": "rate limited",
+  "request_id": "550e8400-e29b-41d4-a716-446655440000",
+  "details": {
+    "limited_by": "user",
+    "retry_after_seconds": 1
+  }
+}
+```
+
+<Info>
+**Retry-After Header**
+
+The `Retry-After` HTTP header is also set with the number of seconds to wait.
+</Info>
+
+## Batch Requests
+
+All POST endpoints accept up to 100 items per request. See [POST /v1/prices/latest](/docs/api-reference/prices-latest#post-v1priceslatest) for examples.
+

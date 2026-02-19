@@ -1,0 +1,896 @@
+openapi: 3.1.0
+info:
+  title: cs2.sh API
+  description: Real-time and historical Counter-Strike 2 price data from BUFF, Youpin, CSFloat, Steam, Skinport, and C5Game.
+  version: "1.0"
+  contact:
+    url: https://cs2.sh
+
+servers:
+  - url: https://api.cs2.sh
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key from your cs2.sh dashboard
+
+  schemas:
+    Quota:
+      type: object
+      properties:
+        remaining:
+          type: integer
+          description: Remaining requests in billing period (-1 for unlimited)
+        resets_at:
+          type: string
+          format: date-time
+          description: When the quota resets
+
+    Error:
+      type: object
+      required: [error, message, request_id]
+      properties:
+        error:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable description
+        request_id:
+          type: string
+          format: uuid
+        details:
+          type: object
+
+    ItemError:
+      type: object
+      properties:
+        item:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+
+    MarketplaceData:
+      type: object
+      properties:
+        updated_at:
+          type: string
+          format: date-time
+          description: Price last updated at marketplace
+        collected_at:
+          type: string
+          format: date-time
+          description: When cs2.sh collected this data
+        ask:
+          type: number
+          nullable: true
+          description: Lowest listing price (USD)
+        ask_volume:
+          type: integer
+          nullable: true
+          description: Number of items listed for sale
+        bid:
+          type: number
+          nullable: true
+          description: Highest buy order (USD) — BUFF, Youpin, C5Game only
+        bid_volume:
+          type: integer
+          nullable: true
+          description: Number of active buy orders — BUFF, Youpin only
+
+    SkinportData:
+      allOf:
+        - $ref: "#/components/schemas/MarketplaceData"
+        - type: object
+          properties:
+            max_ask:
+              type: number
+              description: Highest listing price
+            mean_ask:
+              type: number
+              description: Average listing price
+            median_ask:
+              type: number
+              description: Median listing price
+            24h_history:
+              $ref: "#/components/schemas/SkinportHistory"
+            7d_history:
+              $ref: "#/components/schemas/SkinportHistory"
+            30d_history:
+              $ref: "#/components/schemas/SkinportHistory"
+            90d_history:
+              $ref: "#/components/schemas/SkinportHistory"
+
+    SkinportHistory:
+      type: object
+      properties:
+        price:
+          type: number
+        max_price:
+          type: number
+        mean_price:
+          type: number
+        median_price:
+          type: number
+        volume:
+          type: integer
+
+    VariantMeta:
+      type: object
+      properties:
+        market_hash_name:
+          type: string
+        name:
+          type: string
+          description: Full variant name including phase/tier
+        display_name:
+          type: string
+          description: Short display name (e.g. "Phase 2")
+        version:
+          type: string
+          description: Machine-readable variant version (e.g. "p2", "ruby")
+
+    OHLCCandle:
+      type: object
+      properties:
+        open_ask:
+          type: number
+          description: First ask price in the interval
+        high_ask:
+          type: number
+          description: Highest ask price in the interval
+        low_ask:
+          type: number
+          description: Lowest ask price in the interval
+        close_ask:
+          type: number
+          description: Last ask price in the interval
+        ask_volume:
+          type: integer
+          nullable: true
+          description: Ask volume at end of interval
+        open_bid:
+          type: number
+          nullable: true
+          description: First bid price in the interval
+        high_bid:
+          type: number
+          nullable: true
+          description: Highest bid price in the interval
+        low_bid:
+          type: number
+          nullable: true
+          description: Lowest bid price in the interval
+        close_bid:
+          type: number
+          nullable: true
+          description: Last bid price in the interval
+        bid_volume:
+          type: integer
+          nullable: true
+          description: Bid volume at end of interval
+        sample_count:
+          type: integer
+          description: Number of 5-minute samples aggregated
+        open_time:
+          type: string
+          format: date-time
+          description: Timestamp of first observation in the interval
+        close_time:
+          type: string
+          format: date-time
+          description: Timestamp of last observation in the interval
+
+    AggregateData:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Actual timestamp of last price in bucket
+        ask:
+          type: number
+          nullable: true
+          description: Lowest ask price (USD)
+        ask_volume:
+          type: integer
+          nullable: true
+          description: Total ask volume
+        bid:
+          type: number
+          nullable: true
+          description: Highest bid price (USD)
+        bid_volume:
+          type: integer
+          nullable: true
+          description: Total bid volume
+        hourly_volume:
+          type: number
+          nullable: true
+          description: Hourly trading volume (aggregate source only)
+        total_supply:
+          type: number
+          nullable: true
+          description: Total market supply (aggregate source only)
+        sample_count:
+          type: integer
+          description: Number of data points in the bucket
+
+    CSFloatDailyData:
+      type: object
+      properties:
+        date:
+          type: string
+          description: Date of the sales data (YYYY-MM-DD)
+        price:
+          type: number
+          description: Average sale price across all sales that day (USD)
+        volume:
+          type: integer
+          description: Total number of sales that day
+
+    PriceItem:
+      type: object
+      properties:
+        market_hash_name:
+          type: string
+        buff:
+          $ref: "#/components/schemas/MarketplaceData"
+        youpin:
+          $ref: "#/components/schemas/MarketplaceData"
+        csfloat:
+          $ref: "#/components/schemas/MarketplaceData"
+        steam:
+          $ref: "#/components/schemas/MarketplaceData"
+        skinport:
+          $ref: "#/components/schemas/SkinportData"
+        c5game:
+          $ref: "#/components/schemas/MarketplaceData"
+        variants:
+          type: object
+          description: Variant prices keyed by version (e.g. "p2", "ruby"). Same structure as parent.
+          additionalProperties:
+            type: object
+
+    LiquidityItem:
+      type: object
+      properties:
+        market_hash_name:
+          type: string
+        liquidity_rank:
+          type: number
+          description: Liquidity score from 0-100
+        updated_at:
+          type: string
+          format: date-time
+        collected_at:
+          type: string
+          format: date-time
+        variants:
+          type: object
+          description: Variant liquidity keyed by version (e.g. "p2", "ruby"). Same structure as parent.
+          additionalProperties:
+            type: object
+
+    SourceStatus:
+      type: object
+      properties:
+        updated_at:
+          type: string
+          format: date-time
+          description: When price was last updated at marketplace
+        collected_at:
+          type: string
+          format: date-time
+          description: When cs2.sh collected this data
+        status:
+          type: string
+          enum: [up, degraded, down]
+          description: "up: <10 min, degraded: 10 min–1 hr, down: >1 hr"
+
+  parameters:
+    AcceptEncoding:
+      name: Accept-Encoding
+      in: header
+      required: true
+      schema:
+        type: string
+        default: gzip
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Service status and data freshness
+      description: Returns service status and data freshness for each source. No authentication required.
+      security: []
+      responses:
+        "200":
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [up, degraded, down]
+                    description: Overall service status
+                  last_refreshed_at:
+                    type: string
+                    format: date-time
+                    description: When health data was last refreshed
+                  sources:
+                    type: object
+                    properties:
+                      buff:
+                        $ref: "#/components/schemas/SourceStatus"
+                      youpin:
+                        $ref: "#/components/schemas/SourceStatus"
+                      csfloat:
+                        $ref: "#/components/schemas/SourceStatus"
+                      steam:
+                        $ref: "#/components/schemas/SourceStatus"
+                      skinport:
+                        $ref: "#/components/schemas/SourceStatus"
+                      c5game:
+                        $ref: "#/components/schemas/SourceStatus"
+                  stats:
+                    type: object
+                    properties:
+                      total_events:
+                        type: integer
+                        description: Total number of price events in database
+                      market_hash_names:
+                        type: integer
+                        description: Number of unique items tracked
+                      variant_items:
+                        type: integer
+                        description: Number of variant items tracked
+
+  /v1/prices/latest:
+    get:
+      operationId: getPricesLatest
+      summary: Get current prices for all items
+      description: Returns current prices for all items from all supported marketplaces. Includes variant prices. Available on all paid plans.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      responses:
+        "200":
+          description: Current prices for all items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  currency:
+                    type: string
+                    example: USD
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  items:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/components/schemas/PriceItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      operationId: postPricesLatest
+      summary: Get current prices for specific items
+      description: Returns current prices for up to 100 specific items. Available on all paid plans.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                  description: List of market_hash_name values
+      responses:
+        "200":
+          description: Current prices for requested items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  currency:
+                    type: string
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  items:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/components/schemas/PriceItem"
+                  errors:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ItemError"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v1/prices/history:
+    post:
+      operationId: postPricesHistory
+      summary: Get OHLC price history
+      description: Returns historical prices with OHLC aggregation for up to 100 specific items. Available on Scale and Enterprise plans only.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items, start]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                  description: List of market_hash_name values
+                start:
+                  type: string
+                  description: Start date (YYYY-MM-DD or RFC3339)
+                end:
+                  type: string
+                  default: now
+                  description: End date (YYYY-MM-DD or RFC3339)
+                sources:
+                  type: array
+                  items:
+                    type: string
+                    enum: [buff, youpin, csfloat, steam, skinport, c5game]
+                  default: [buff, youpin, csfloat, steam, skinport, c5game]
+                  description: Filter to specific sources
+                interval:
+                  type: string
+                  enum: ["5m", "30m", "1h", "1d"]
+                  default: "5m"
+                  description: "Aggregation interval. Max ranges: 5m=14d, 30m=90d, 1h=180d, 1d=365d"
+      responses:
+        "200":
+          description: OHLC price history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  currency:
+                    type: string
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  start:
+                    type: string
+                    format: date-time
+                  end:
+                    type: string
+                    format: date-time
+                  interval:
+                    type: string
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        market_hash_name:
+                          type: string
+                        count:
+                          type: integer
+                          description: Number of data points returned
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              bucket:
+                                type: string
+                                format: date-time
+                                description: Start of the time interval
+                            additionalProperties:
+                              $ref: "#/components/schemas/OHLCCandle"
+                        variants:
+                          type: object
+                          additionalProperties:
+                            type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v1/liquidity:
+    get:
+      operationId: getLiquidity
+      summary: Get liquidity rankings for all items
+      description: Returns liquidity rankings (0-100) for all items. Available on Scale and Enterprise plans only.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      responses:
+        "200":
+          description: Liquidity rankings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  items:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/components/schemas/LiquidityItem"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      operationId: postLiquidity
+      summary: Get liquidity rankings for specific items
+      description: Returns liquidity rankings for up to 100 specific items. Available on Scale and Enterprise plans only.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                  description: List of market_hash_name values
+      responses:
+        "200":
+          description: Liquidity rankings for requested items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  items:
+                    type: object
+                    additionalProperties:
+                      $ref: "#/components/schemas/LiquidityItem"
+                  errors:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ItemError"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v1/archive/history:
+    post:
+      operationId: postArchiveHistory
+      summary: Get long-term historical prices
+      description: Returns long-term archive price history for up to 100 specific items. Data spans ~2-3 years. Available on Scale and Enterprise plans.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items, start]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                  description: List of market_hash_name values
+                start:
+                  type: string
+                  description: Start date (YYYY-MM-DD or RFC3339)
+                end:
+                  type: string
+                  default: now
+                  description: End date (YYYY-MM-DD or RFC3339)
+                sources:
+                  type: array
+                  items:
+                    type: string
+                    enum: [aggregate, buff, youpin, c5game]
+                  default: [aggregate]
+                  description: "Filter to specific sources. Only aggregate, buff, youpin, c5game are available."
+                interval:
+                  type: string
+                  enum: ["1h", "1d"]
+                  default: "1d"
+                  description: Aggregation interval
+      responses:
+        "200":
+          description: Archive price history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  currency:
+                    type: string
+                  start:
+                    type: string
+                    format: date-time
+                  end:
+                    type: string
+                    format: date-time
+                  interval:
+                    type: string
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        market_hash_name:
+                          type: string
+                        count:
+                          type: integer
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              bucket:
+                                type: string
+                                format: date-time
+                                description: Start of the time interval
+                            additionalProperties:
+                              $ref: "#/components/schemas/AggregateData"
+                        variants:
+                          type: object
+                          additionalProperties:
+                            type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v1/archive/csfloat:
+    post:
+      operationId: postArchiveCSFloat
+      summary: Get CSFloat historical sales
+      description: Returns CSFloat daily sale history for up to 100 specific items. Data spans ~2-3 years. Available on Scale and Enterprise plans.
+      parameters:
+        - $ref: "#/components/parameters/AcceptEncoding"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: string
+                  maxItems: 100
+                  description: List of market_hash_name values
+                start:
+                  type: string
+                  default: "2020-01-01"
+                  description: Start date (YYYY-MM-DD or RFC3339)
+                end:
+                  type: string
+                  default: now
+                  description: End date (YYYY-MM-DD or RFC3339)
+      responses:
+        "200":
+          description: CSFloat daily sale history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_time:
+                    type: string
+                    format: date-time
+                  currency:
+                    type: string
+                  start:
+                    type: string
+                    format: date-time
+                  end:
+                    type: string
+                    format: date-time
+                  quota:
+                    $ref: "#/components/schemas/Quota"
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        market_hash_name:
+                          type: string
+                        count:
+                          type: integer
+                        data:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/CSFloatDailyData"
+                        variants:
+                          type: object
+                          additionalProperties:
+                            type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Quota exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"

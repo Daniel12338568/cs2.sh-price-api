@@ -1,0 +1,21 @@
+---
+title: Get Liquidity
+openapi: openapi.yaml GET /v1/liquidity
+---
+
+<ResponseExample>
+```json
+{
+  "response_time": "2023-11-07T05:31:56Z",
+  "quota": { "remaining": "<number>", "resets_at": "2023-11-07T05:31:56Z" },
+  "items": {
+    "<market_hash_name>": {
+      "market_hash_name": "<string>",
+      "liquidity_rank": "<number>",
+      "updated_at": "2023-11-07T05:31:56Z",
+      "collected_at": "2023-11-07T05:31:56Z"
+    }
+  }
+}
+```
+</ResponseExample>

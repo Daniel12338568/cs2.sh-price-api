@@ -1,0 +1,73 @@
+---
+title: Marketplaces
+description: Available fields per marketplace.
+---
+
+cs2.sh currently supports BUFF, Youpin, CSFloat, Steam, Skinport, and C5Game.
+All prices are normalized to USD.
+
+Fields marked "Yes" are returned by the API but may be `null` for items where the marketplace has no data.
+
+| Marketplace | ask | bid | ask_volume | bid_volume | Additional      |
+| ----------- | --- | --- | ---------- | ---------- | --------------- |
+| BUFF        | Yes | Yes | Yes        | Yes        | -               |
+| Youpin      | Yes | Yes | Yes        | Yes        | -               |
+| CSFloat     | Yes | -   | Yes        | -          | -               |
+| Steam       | Yes | -   | Yes        | -          | -               |
+| Skinport    | Yes | -   | Yes        | -          | max/mean/median, history |
+| C5Game      | Yes | Yes | Yes        | -          | -               |
+
+## Field Types
+
+<ResponseField name="ask" type="number">
+  Lowest listing price (USD)
+</ResponseField>
+
+<ResponseField name="bid" type="number">
+  Highest buy order (USD)
+</ResponseField>
+
+<ResponseField name="ask_volume" type="integer">
+  Items listed for sale
+</ResponseField>
+
+<ResponseField name="bid_volume" type="integer">
+  Active buy orders
+</ResponseField>
+
+<ResponseField name="updated_at" type="date-time">
+  Update time provided by Marketplace
+</ResponseField>
+
+<ResponseField name="collected_at" type="date-time">
+  Collected time from cs2.sh system
+</ResponseField>
+
+<ResponseField name="max_ask" type="number">
+  Highest listing price (Skinport)
+</ResponseField>
+
+<ResponseField name="mean_ask" type="number">
+  Average listing price (Skinport)
+</ResponseField>
+
+<ResponseField name="median_ask" type="number">
+  Median listing price (Skinport)
+</ResponseField>
+
+<ResponseField name="24h_history" type="object">
+  24-hour price history (Skinport)
+</ResponseField>
+
+<ResponseField name="7d_history" type="object">
+  7-day price history (Skinport)
+</ResponseField>
+
+<ResponseField name="30d_history" type="object">
+  30-day price history (Skinport)
+</ResponseField>
+
+<ResponseField name="90d_history" type="object">
+  90-day price history (Skinport)
+</ResponseField>
+

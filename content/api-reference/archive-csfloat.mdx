@@ -1,0 +1,29 @@
+---
+title: Get CSFloat Archive
+openapi: openapi.yaml POST /v1/archive/csfloat
+---
+
+<ResponseExample>
+```json
+{
+  "response_time": "2023-11-07T05:31:56Z",
+  "currency": "<string>",
+  "start": "2023-11-07T05:31:56Z",
+  "end": "2023-11-07T05:31:56Z",
+  "quota": { "remaining": "<number>", "resets_at": "2023-11-07T05:31:56Z" },
+  "items": {
+    "<market_hash_name>": {
+      "market_hash_name": "<string>",
+      "count": "<number>",
+      "data": [
+        {
+          "date": "<string>",
+          "price": "<number>",
+          "volume": "<number>"
+        }
+      ]
+    }
+  }
+}
+```
+</ResponseExample>
