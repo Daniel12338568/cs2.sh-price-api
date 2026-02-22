@@ -1,0 +1,14 @@
+name = "cs2sh-chat"
+main = "worker.js"
+compatibility_date = "2024-12-01"
+
+# KV namespace for rate limiting + docs cache
+# After creating: wrangler kv namespace create KV
+# Then paste the id below
+[[kv_namespaces]]
+binding = "KV"
+id = "93d89950302d4921ae484155d2cbfa45"
+
+# Set via: wrangler secret put GEMINI_API_KEY
+# [vars]
+# GEMINI_API_KEY is stored as a secret, not here
