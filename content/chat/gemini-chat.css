@@ -88,7 +88,7 @@
   gap: 0.25rem;
 }
 
-#gc-close {
+#gc-close, #gc-reset {
   background: none;
   border: none;
   cursor: pointer;
@@ -99,13 +99,13 @@
   border-radius: 0.5rem;
   transition: background 0.15s, color 0.15s;
 }
-.dark #gc-close {
+.dark #gc-close, .dark #gc-reset {
   color: rgb(var(--gray-100));
 }
-#gc-close:hover {
+#gc-close:hover, #gc-reset:hover {
   background: rgb(var(--gray-100));
 }
-.dark #gc-close:hover {
+.dark #gc-close:hover, .dark #gc-reset:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -218,11 +218,11 @@
 }
 @keyframes gc-blink { 50% { opacity: 0; } }
 
-/* Copy button */
+/* Copy button — sticky bottom-right inside scrollable pre */
 .gc-copy-btn {
-  position: absolute;
-  top: 0.375rem;
-  right: 0.375rem;
+  position: sticky;
+  bottom: 0;
+  float: right;
   background: rgb(var(--gray-200));
   border: none;
   border-radius: 4px;

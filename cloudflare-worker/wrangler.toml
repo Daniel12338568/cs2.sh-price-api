@@ -13,6 +13,12 @@ id = "93d89950302d4921ae484155d2cbfa45"
 [placement]
 mode = "smart"
 
+# D1 database for chat logging
+[[d1_databases]]
+binding = "DB"
+database_name = "cs2sh-chat-logs"
+database_id = "9904a097-103d-40d4-8b07-a1835685789a"
+
 # Set via: wrangler secret put GEMINI_API_KEY
 # [vars]
 # GEMINI_API_KEY is stored as a secret, not here
