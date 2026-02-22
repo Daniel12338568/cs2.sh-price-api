@@ -45,6 +45,10 @@
     "og:site_name": "cs2.sh Docs",
     "og:url": "https://cs2.sh/docs"
   },
+  "head": [
+    "<link rel=\"stylesheet\" href=\"/gemini-chat.css\" />",
+    "<script src=\"/gemini-chat.js\" defer></script>"
+  ],
   "contextual": {
     "options": ["copy", "view", "claude", "chatgpt"]
   },
