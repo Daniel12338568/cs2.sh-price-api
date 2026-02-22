@@ -9,6 +9,10 @@ compatibility_date = "2024-12-01"
 binding = "KV"
 id = "93d89950302d4921ae484155d2cbfa45"
 
+# Place worker near Google's API servers to reduce outbound latency
+[placement]
+mode = "smart"
+
 # Set via: wrangler secret put GEMINI_API_KEY
 # [vars]
 # GEMINI_API_KEY is stored as a secret, not here
