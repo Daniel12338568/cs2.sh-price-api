@@ -178,6 +178,7 @@ export default {
           messages,
           max_tokens: MAX_TOKENS,
           stream: body.stream ?? true,
+          reasoning_effort: "minimal",
         }),
       });
 
